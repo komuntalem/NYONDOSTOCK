@@ -1,0 +1,39 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2 New Deposit Account
+    a.btn.btn-outline-secondary(href="/deposits") Back
+
+  .row.justify-content-center
+    .col-md-7
+      .card.dark-card
+        .card-body
+          form(method="POST" action="/deposits/add")
+            .row.g-3
+              .col-12
+                label.form-label Deposit Member Customer *
+                select.form-select(name="customer_id" required)
+                  option(value="") Select customer...
+                  each c in customers
+                    option(value=c.id)= `${c.name} - ${c.phone}`
+                if !customers.length
+                  .mt-2.alert.alert-warning.small
+                    | No deposit members yet. 
+                    a(href="/customers/add") Add a deposit member customer first.
+              .col-12
+                label.form-label Product (Cement, Iron Sheets, or Bars) *
+                select.form-select(name="product_id" required)
+                  option(value="") Select product...
+                  each p in products
+                    option(value=p.id)= `${p.name} - UGX ${parseInt(p.selling_price).toLocaleString()}`
+              .col-12
+                label.form-label Quantity *
+                input.form-control(type="number" name="quantity" min="1" required placeholder="e.g. 10")
+                small.text-muted Quantity of the selected product for the deposit plan
+              .col-12
+                .alert.alert-info.small
+                  | The target amount will be calculated automatically using the current selling price × quantity. Price is not locked.
+              .col-12
+                button.btn.btn-warning.fw-bold(type="submit")
+                  | Create Deposit Account

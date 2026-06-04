@@ -1,0 +1,40 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2
+      i.bi.bi-person-plus.me-2
+      | Add New User
+    a.btn.btn-outline-secondary(href="/users") Back
+
+  .row.justify-content-center
+    .col-md-6
+      .card.dark-card
+        .card-body
+          form(method="POST" action="/users/add")
+            .row.g-3
+              .col-12
+                label.form-label Full Name *
+                input.form-control(type="text" name="name" required)
+              .col-12
+                label.form-label Email *
+                input.form-control(type="email" name="email" required)
+              .col-md-6
+                label.form-label Phone (Uganda) *
+                input.form-control(type="tel" name="phone" required placeholder="07XXXXXXXX")
+              .col-md-6
+                label.form-label NIN
+                input.form-control(type="text" name="nin" placeholder="CM1234567...")
+              .col-12
+                label.form-label Role *
+                select.form-select(name="role" required)
+                  option(value="sales_attendant") Sales Attendant
+                  option(value="store_manager") Store Manager
+                  option(value="admin") Admin
+              .col-12
+                label.form-label Password *
+                input.form-control(type="password" name="password" required minlength="6")
+              .col-12
+                button.btn.btn-warning.fw-bold(type="submit")
+                  i.bi.bi-person-plus.me-1
+                  | Create User

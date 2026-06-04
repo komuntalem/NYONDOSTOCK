@@ -1,0 +1,204 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2 New Sale (POS)
+    a.btn.btn-outline-secondary(href="/sales") Back
+
+  .row.g-3
+    .col-md-7
+      .card.dark-card
+        .card-header
+          | Select Products
+          input.form-control.form-control-sm.float-end.w-50#productSearch(placeholder="Search products...")
+        .card-body.p-0
+          .table-responsive(style="max-height:400px;overflow-y:auto")
+            table.table.table-dark.table-hover.mb-0.table-sm
+              thead(style="position:sticky;top:0;background:#000")
+                tr
+                  th Product
+                  th Stock
+                  th Price
+                  th Add
+              tbody#productTable
+                each p in products
+                  tr(data-name=p.name.toLowerCase())
+                    td= p.name
+                    td
+                      span(class=p.quantity < 5 ? 'text-warning' : 'text-success')= p.quantity
+                      |  #{p.unit}
+                    td.text-warning= parseInt(p.selling_price).toLocaleString()
+                    td
+                      button.btn.btn-sm.btn-outline-secondary.add-btn(
+                        type="button"
+                        data-id=p.id
+                        data-name=p.name
+                        data-price=p.selling_price
+                        data-stock=p.quantity
+                        data-unit=p.unit
+                        onclick="addToCart(this)"
+                      ) Add
+
+    .col-md-5
+      .card.dark-card
+        .card-header
+          | Sale Cart
+        .card-body
+          #cartEmpty.text-center.text-muted.py-4(style="display:block")
+            | No items added yet
+          #cartItems(style="display:none")
+            .table-responsive
+              table.table.table-dark.table-sm.mb-0
+                thead
+                  tr
+                    th Product
+                    th Qty
+                    th Price
+                    th Del
+                tbody#cartBody
+
+          hr.border-secondary
+          .row.g-2
+            .col-12
+              label.form-label.text-muted Customer Name
+              input.form-control.form-control-sm#customerName(placeholder="Walk-in customer")
+            .col-12
+              label.form-label.text-muted Customer Phone (optional)
+              input.form-control.form-control-sm#customerPhone(type="tel" placeholder="e.g. 0700123456")
+            .col-12
+              label.form-label.text-muted Destination (optional)
+              input.form-control.form-control-sm#destination(type="text" placeholder="Delivery location or customer address")
+            .col-12
+              label.form-label.text-muted Transport Cost (UGX)
+              input.form-control.form-control-sm#transportCost(type="number" value="0" min="0" placeholder="0")
+            .col-12
+              label.form-label.text-muted Payment Method
+              select.form-select.form-select-sm#paymentMethod
+                option(value="cash" selected) Cash
+                option(value="mobile_money") Mobile Money
+                option(value="credit") Credit
+          .mt-3.totals-box
+            .d-flex.justify-content-between
+              span.text-muted Subtotal
+              span#subtotalDisplay UGX 0
+            .d-flex.justify-content-between
+              span.text-muted Transport
+              span#transportDisplay UGX 0
+            hr.border-secondary
+            .d-flex.justify-content-between.fw-bold
+              span.text-warning TOTAL
+              span.text-warning.fs-5#grandTotal UGX 0
+          button.btn.btn-warning.w-100.fw-bold.mt-3(type="button" onclick="submitSale()")
+            | COMPLETE SALE
+
+block scripts
+  script.
+    let cart = [];
+
+    function addToCart(btn) {
+      const id = btn.dataset.id;
+      const name = btn.dataset.name;
+      const price = parseFloat(btn.dataset.price);
+      const stock = parseInt(btn.dataset.stock);
+      const existing = cart.find(i => i.product_id == id);
+      if (existing) {
+        if (existing.qty >= stock) { alert('Not enough stock!'); return; }
+        existing.qty++;
+      } else {
+        cart.push({ product_id: id, name, price, qty: 1, stock });
+      }
+      renderCart();
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(i => i.product_id != id);
+      renderCart();
+    }
+
+    function updateQty(id, val) {
+      const item = cart.find(i => i.product_id == id);
+      if (!item) return;
+      const qty = parseInt(val);
+      if (qty < 1) { removeFromCart(id); return; }
+      if (qty > item.stock) { alert('Max stock: ' + item.stock); return; }
+      item.qty = qty;
+      renderCart();
+    }
+
+    function renderCart() {
+      const tbody = document.getElementById('cartBody');
+      tbody.innerHTML = '';
+      let subtotal = 0;
+      cart.forEach(item => {
+        subtotal += item.price * item.qty;
+        tbody.innerHTML += `<tr>
+          <td style="max-width:100px"><small>${item.name}</small></td>
+          <td><input type="number" class="form-control form-control-sm" style="width:55px" value="${item.qty}" min="1" max="${item.stock}" onchange="updateQty('${item.product_id}',this.value)"></td>
+          <td class="text-warning"><small>${(item.price*item.qty).toLocaleString()}</small></td>
+          <td><button class="btn btn-sm btn-outline-danger" onclick="removeFromCart('${item.product_id}')">Del</button></td>
+        </tr>`;
+      });
+      document.getElementById('cartEmpty').style.display = cart.length ? 'none' : 'block';
+      document.getElementById('cartItems').style.display = cart.length ? 'block' : 'none';
+      updateTotals(subtotal);
+    }
+
+    function updateTotals(subtotal) {
+      const transport = parseFloat(document.getElementById('transportCost').value) || 0;
+      const grand = subtotal + transport;
+      document.getElementById('subtotalDisplay').textContent = 'UGX ' + subtotal.toLocaleString();
+      document.getElementById('transportDisplay').textContent = 'UGX ' + transport.toLocaleString();
+      document.getElementById('grandTotal').textContent = 'UGX ' + grand.toLocaleString();
+    }
+
+    document.getElementById('transportCost').addEventListener('input', () => {
+      const subtotal = cart.reduce((s,i) => s + i.price*i.qty, 0);
+      updateTotals(subtotal);
+    });
+
+    // Product search
+    document.getElementById('productSearch').addEventListener('input', function() {
+      const q = this.value.toLowerCase();
+      document.querySelectorAll('#productTable tr').forEach(row => {
+        row.style.display = row.dataset.name.includes(q) ? '' : 'none';
+      });
+    });
+
+
+    async function submitSale() {
+      if (!cart.length) { alert('Add items to cart first!'); return; }
+      const btn = event.target;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+      
+      const customerPhone = document.getElementById('customerPhone').value.trim();
+      const paymentMethod = document.getElementById('paymentMethod').value.trim() || 'cash';
+      
+      const payload = {
+        customer_name: document.getElementById('customerName').value || 'Walk-in',
+        customer_phone: customerPhone,
+        destination: document.getElementById('destination')?.value || '',
+        transport_cost: document.getElementById('transportCost').value || 0,
+        payment_method: paymentMethod.toLowerCase(),
+        items: JSON.stringify(cart.map(i => ({ product_id: i.product_id, qty: i.qty, price: i.price })))
+      };
+      
+      console.log('Submitting sale:', payload);
+      
+      const res = await fetch('/sales/create', {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: new URLSearchParams(payload)
+      });
+      
+      const data = await res.json();
+      console.log('Sale response:', data);
+      
+      if (data.success) {
+        window.location.href = '/sales/receipt/' + data.sale_id;
+      } else {
+        alert('Error: ' + data.message);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-check-circle me-2"></i>COMPLETE SALE';
+      }
+    }

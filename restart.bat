@@ -1,0 +1,9 @@
+@echo off
+echo Killing existing Node processes...
+taskkill /F /IM node.exe 2>nul
+
+echo Waiting 2 seconds...
+timeout /t 2 /nobreak
+
+echo Starting app...
+npm start

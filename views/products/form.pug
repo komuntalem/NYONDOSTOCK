@@ -1,0 +1,74 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2
+      i.bi.bi-box-seam.me-2
+      = title
+    a.btn.btn-outline-secondary(href="/products")
+      i.bi.bi-arrow-left.me-1
+      | Back
+
+  .row.justify-content-center
+    .col-md-8
+      .card.dark-card
+        .card-body
+          form(method="POST" action=product.id ? `/products/edit/${product.id}` : '/products/add')
+            .row.g-3
+              .col-md-8
+                label.form-label Product Name *
+                input.form-control(type="text" name="name" value=product.name required placeholder="e.g. Iron Bar 12mm")
+              .col-md-4
+                label.form-label Category *
+                input.form-control(type="text" name="category" value=product.category list="catlist" required)
+                datalist#catlist
+                  option(value="Cement")
+                  option(value="Iron Bars")
+                  option(value="Iron Sheets")
+                  option(value="Nails")
+                  option(value="Wire")
+                  option(value="Tools")
+                  option(value="Other")
+              .col-md-4
+                label.form-label Unit *
+                select.form-select(name="unit")
+                  option(value="bag" selected=product.unit==='bag') Bag
+                  option(value="piece" selected=product.unit==='piece') Piece
+                  option(value="roll" selected=product.unit==='roll') Roll
+                  option(value="sheet" selected=product.unit==='sheet') Sheet
+                  option(value="pack" selected=product.unit==='pack') Pack
+                  option(value="kg" selected=product.unit==='kg') Kg
+                  option(value="unit" selected=!product.unit||product.unit==='unit') Unit
+              .col-md-4
+                label.form-label Cost Price (UGX) *
+                input.form-control(type="number" name="cost_price" value=product.cost_price min="0" required id="costPrice")
+              .col-md-4
+                label.form-label Selling Price (UGX) *
+                input.form-control(type="number" name="selling_price" value=product.selling_price min="0" required id="sellPrice")
+              .col-md-4
+                label.form-label Current Stock Qty *
+                input.form-control(type="number" name="quantity" value=product.quantity min="0" required)
+              .col-md-4
+                label.form-label Min Stock Level
+                input.form-control(type="number" name="min_stock_level" value=product.min_stock_level||5 min="0")
+              .col-12
+                label.form-label Description
+                textarea.form-control(name="description" rows="2" placeholder="Optional notes")= product.description
+              .col-12
+                .d-flex.gap-2
+                  button.btn.btn-warning.fw-bold(type="submit")
+                    i.bi.bi-save.me-1
+                    = product.id ? 'Update Product' : 'Add Product'
+                  a.btn.btn-secondary(href="/products") Cancel
+
+block scripts
+  script.
+    document.getElementById('sellPrice').addEventListener('input', function() {
+      const cost = parseFloat(document.getElementById('costPrice').value) || 0;
+      const sell = parseFloat(this.value) || 0;
+      if (sell > 0 && sell <= cost) {
+        this.classList.add('is-invalid');
+      } else {
+        this.classList.remove('is-invalid');
+      }
+    });

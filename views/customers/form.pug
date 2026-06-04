@@ -1,0 +1,35 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2
+      i.bi.bi-person-plus.me-2
+      = title
+    a.btn.btn-outline-secondary(href="/customers") Back
+
+  .row.justify-content-center
+    .col-md-7
+      .card.dark-card
+        .card-body
+          form(method="POST" action=customer.id ? `/customers/edit/${customer.id}` : '/customers/add')
+            .row.g-3
+              .col-md-8
+                label.form-label Name *
+                input.form-control(type="text" name="name" value=customer.name required)
+              .col-md-4
+                label.form-label Phone * (Uganda)
+                input.form-control(type="tel" name="phone" value=customer.phone required placeholder="07XXXXXXXX")
+                small.text-muted Must be valid Ugandan number
+              .col-md-6
+                label.form-label NIN (National ID)
+                input.form-control(type="text" name="nin" value=customer.nin placeholder="CM1234567...")
+              .col-md-6
+                label.form-label Email
+                input.form-control(type="email" name="email" value=customer.email)
+              .col-12
+                label.form-label Address
+                textarea.form-control(name="address" rows="2")= customer.address
+              .col-12
+                button.btn.btn-warning.fw-bold(type="submit")
+                  i.bi.bi-save.me-1
+                  = customer.id ? 'Update Customer' : 'Add Customer'

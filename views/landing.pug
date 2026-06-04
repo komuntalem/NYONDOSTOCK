@@ -1,0 +1,189 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title NyondoStock — NYONDO General Hardware LTD
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css")
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
+    link(rel="stylesheet" href="/css/landing.css")
+  body
+    //- ─── SLIDESHOW BACKGROUND ──────────────────────────────────────────────
+    .slideshow-container
+      .slide.fade(style="background-image: url('/pic1.jpg')")
+      .slide.fade(style="background-image: url('/pic2.jpg')")
+      .slide.fade(style="background-image: url('/pic3.jpg')")
+      .slideshow-overlay
+
+    //- ─── HERO ──────────────────────────────────────────────────────────────
+    section#hero.hero.simple
+      .hero-content.text-center
+        .logo-section
+          h1.welcome-title
+            span.brand-nyo NYO
+            span.brand-ndo NDO
+            span.brand-stock STOCK
+          p.company-name NYONDO General Hardware LTD
+        
+      
+        h3.welcome-subtitle Inventory & Sales System
+        p.welcome-description
+          | Manage your stock and sales in one easy place.
+        
+        .hero-actions
+          button#loginBtn.btn-primary-cta(type="button" data-bs-toggle="modal" data-bs-target="#loginModal")
+            
+            | Login
+
+    //- ─── LOGIN MODAL ───────────────────────────────────────────────────
+    .modal.fade#loginModal(tabindex="-1")
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-header.border-0
+            button.btn-close(type="button" data-bs-dismiss="modal")
+          .modal-body
+            if error && error.length
+              .alert.alert-danger.mb-3
+                i.bi.bi-exclamation-triangle.me-2
+                = error[0]
+            form(method="POST" action="/login" id="loginForm")
+              h3.text-center.mb-4.fw-bold.text-dark LOGIN
+              .mb-3
+                label.form-label Email Address
+                .input-group
+                  span.input-group-text
+                    i.bi.bi-envelope
+                  input.form-control(type="email" name="email" placeholder="admin@nyondo.com" required)
+              .mb-4
+                label.form-label Password
+                .input-group
+                  span.input-group-text
+                    i.bi.bi-lock
+                  input.form-control(type="password" name="password" placeholder="Enter password" required)
+              button.btn.btn-dark.w-100.fw-bold(type="submit")
+                i.bi.bi-box-arrow-in-right.me-2
+                | LOGIN
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js")
+          .stat
+            span.stat-num UGX
+            span.stat-lbl Currency Support
+
+    //- ─── FEATURES ──────────────────────────────────────────────────────────
+    section#features.features
+      .section-container
+        .section-label Features
+        h2.section-title What NyondoStock Does
+        .features-grid
+          .feature-card
+            .feat-icon
+              i.bi.bi-boxes
+            h3 Stock Management
+            p Track every bag of cement, iron bar, and roll of wire. Get instant low-stock alerts before you run out.
+          .feature-card
+            .feat-icon
+              i.bi.bi-cart3
+            h3 Point of Sale
+            p Fast, live POS with product search, cart, discount management, and printable receipts. Cash, mobile money, or credit.
+          .feature-card
+            .feat-icon
+              i.bi.bi-truck
+            h3 Supplier Credit
+            p Record deliveries on credit, track outstanding balances, and mark payments. Inventory auto-updates on delivery.
+          .feature-card
+            .feat-icon
+              i.bi.bi-piggy-bank
+            h3 Deposit Scheme
+            p Let salary earners save towards big purchases. Track progress, record payments, and view completion status.
+          .feature-card
+            .feat-icon
+              i.bi.bi-geo-alt
+            h3 Transport Calculator
+            p Auto-calculates delivery charges. Free within 10km for orders above UGX 500,000. Integrated into the POS.
+          .feature-card
+            .feat-icon
+              i.bi.bi-bar-chart-line
+            h3 Reports
+            p Revenue, cost, profit summaries. Top-selling products. Daily breakdown. Available to managers and admins.
+
+    //- ─── ROLES ─────────────────────────────────────────────────────────────
+    section#roles.roles
+      .section-container
+        .section-label Access Control
+        h2.section-title Built for Your Whole Team
+        .roles-grid
+          .role-card
+            .role-badge Sales Attendant
+            ul
+              li
+                i.bi.bi-check-lg
+                |  View stock levels
+              li
+                i.bi.bi-check-lg
+                |  Record sales & POS
+              li
+                i.bi.bi-check-lg
+                |  Manage customers
+              li
+                i.bi.bi-check-lg
+                |  Track deposit schemes
+              li.disabled
+                i.bi.bi-x-lg
+                |  Edit stock or prices
+              li.disabled
+                i.bi.bi-x-lg
+                |  View reports
+          .role-card.featured
+            .role-badge Store Manager
+            ul
+              li
+                i.bi.bi-check-lg
+                |  Everything Sales Attendants can do
+              li
+                i.bi.bi-check-lg
+                |  Add &amp; edit products
+              li
+                i.bi.bi-check-lg
+                |  Manage suppliers &amp; credit
+              li
+                i.bi.bi-check-lg
+                |  View full reports
+              li.disabled
+                i.bi.bi-x-lg
+                |  User management
+          .role-card
+            .role-badge Admin
+            ul
+              li
+                i.bi.bi-check-lg
+                |  Full system access
+              li
+                i.bi.bi-check-lg
+                |  Create &amp; manage users
+              li
+                i.bi.bi-check-lg
+                |  All manager permissions
+              li
+                i.bi.bi-check-lg
+                |  Configure roles &amp; access
+
+    //- ─── ABOUT ───────────────────────────────────────
+    section#about.about
+      .section-container
+        .about-inner
+          .about-text
+            .section-label About
+            h2.section-title NYONDO General Hardware LTD
+            p Serving Nansana, Uganda with quality building materials — cement, iron bars, roofing sheets, wire, nails, tools, and more. NyondoStock keeps our operations running smoothly, from supplier deliveries to the final sale.
+            .about-contact
+              span
+                i.bi.bi-geo-alt-fill
+                |  Nansana, Uganda
+          .about-login-box
+            p.box-label Staff Portal
+            h3 Ready to get started?
+            p Log in with your staff credentials to access the dashboard.
+            a.btn-primary-cta(href="/login")
+              | Login Now
+              i.bi.bi-arrow-right
+

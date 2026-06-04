@@ -1,0 +1,50 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2 Collect Deposit Goods
+    a.btn.btn-outline-secondary(href=`/deposits/${deposit.id}`) Back
+
+  .row.g-3.mb-4
+    .col-md-6
+      .card.dark-card
+        .card-body
+          h5.text-dark Customer
+          p.mb-1: strong= deposit.customer_name
+          p.mb-1.text-muted= deposit.phone
+          if deposit.nin
+            p.mb-0.small.text-muted NIN: #{deposit.nin}
+
+    .col-md-6
+      .card.dark-card
+        .card-body
+          h5.text-dark Product Summary
+          p.mb-1: strong= deposit.product_name
+          p.mb-1.text-muted Quantity: #{deposit.quantity} #{deposit.unit}
+          p.mb-1.text-muted Guide target: UGX #{parseInt(deposit.target_amount).toLocaleString()}
+          p.mb-1.text-muted Current unit price: UGX #{parseInt(deposit.selling_price).toLocaleString()}
+          p.mb-1.text-muted Current total: UGX #{parseInt(deposit.quantity * deposit.selling_price).toLocaleString()}
+
+  .card.dark-card.mb-4
+    .card-body
+      h5.text-dark Installment Summary
+      p.mb-1 Deposited so far: UGX #{parseInt(deposit.amount_deposited).toLocaleString()}
+      - const currentTotal = deposit.quantity * deposit.selling_price
+      - const balanceDue = currentTotal - deposit.amount_deposited
+      if balanceDue >= 0
+        p.mb-1.text-success Balance due: UGX #{parseInt(balanceDue).toLocaleString()}
+      else
+        p.mb-1.text-info Refund due: UGX #{parseInt(Math.abs(balanceDue)).toLocaleString()}
+      p.small.text-muted This is based on today's selling price. The customer pays the remaining difference or receives the refund amount.
+
+  .card.dark-card
+    .card-body
+      h5.text-dark Finalize Collection
+      form(method="POST" action=`/deposits/${deposit.id}/collect`)
+        .mb-3
+          label.form-label Payment Method
+          select.form-select(name="payment_method")
+            option(value="cash") Cash
+            option(value="mobile_money") Mobile Money
+        button.btn.btn-success.fw-bold(type="submit")
+

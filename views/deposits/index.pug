@@ -1,0 +1,43 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2 Salary Earner Deposit Scheme
+    a.btn.btn-warning.fw-bold(href="/deposits/add")
+      | New Deposit Account
+
+  .card.dark-card
+    .card-body.p-0
+      .table-responsive
+        table.table.table-dark.table-hover.mb-0
+          thead
+            tr
+              th Customer
+              th Phone
+              th Product
+              th Quantity
+              th Target
+              th Deposited
+              th Remaining
+              th Status
+              th Actions
+          tbody
+            if deposits.length
+              each d in deposits
+                tr
+                  td= d.customer_name
+                  td= d.phone
+                  td= d.product_name
+                  td= d.quantity
+                  td= parseInt(d.target_amount).toLocaleString()
+                  td.text-success= parseInt(d.amount_deposited).toLocaleString()
+                  td.text-dark= parseInt(d.balance).toLocaleString()
+                  td
+                    span(class=`badge bg-${d.status==='completed'?'success':d.status==='active'?'warning text-dark':'secondary'}`)= d.status
+                  td
+                    a.btn.btn-sm.btn-outline-warning(href=`/deposits/${d.id}`)
+                      i.bi.bi-eye
+                      | View
+            else
+              tr
+                td.text-center.text-muted(colspan="8") No deposit accounts yet

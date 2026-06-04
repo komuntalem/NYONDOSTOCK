@@ -1,0 +1,98 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2 Sales & Business Reports
+
+  .report-content
+    .card.dark-card.mb-4
+      .card-body
+        form.row.g-2.align-items-end(method="GET")
+          .col-md-3
+            label.form-label From
+            input.form-control(type="date" name="from" value=from)
+          .col-md-3
+            label.form-label To
+            input.form-control(type="date" name="to" value=to)
+          .col-md-2
+            button.btn.btn-dark.w-100(type="submit")
+              | Generate
+
+    .row.g-3.mb-4
+      .col-md-4
+        .stat-card
+          .stat-value UGX #{parseInt(revenue).toLocaleString()}
+          .stat-label Total Revenue
+      .col-md-4
+        .stat-card
+          .stat-value UGX #{parseInt(cost).toLocaleString()}
+          .stat-label Cost of Goods
+      .col-md-4
+        .stat-card(class=profit > 0 ? 'border-success' : 'border-danger')
+          .stat-value UGX #{parseInt(profit).toLocaleString()}
+          .stat-label Gross Profit
+
+    .row.g-3
+      .col-md-6
+        .card.dark-card
+          .card-header
+            | Top Selling Products
+          .card-body.p-0
+            table.table.table-dark.table-hover.mb-0
+              thead
+                tr
+                  th Product
+                  th Qty Sold
+                  th Revenue
+              tbody
+                if top_products.length
+                  each p in top_products
+                    tr
+                      td= p.name
+                      td= p.qty_sold
+                      td.text-dark UGX #{parseInt(p.revenue).toLocaleString()}
+                else
+                  tr
+                    td.text-center.text-muted(colspan="3") No data
+
+      .col-md-6
+        .card.dark-card
+          .card-header
+            | Supplier Outstanding Debts
+          .card-body.p-0
+            table.table.table-dark.table-hover.mb-0
+              thead
+                tr
+                  th Supplier
+                  th Outstanding (UGX)
+              tbody
+                if supplier_debts.length
+                  each d in supplier_debts
+                    tr
+                      td= d.name
+                      td.text-danger UGX #{parseInt(d.total_debt).toLocaleString()}
+                else
+                  tr
+                    td.text-center.text-success(colspan="2") All suppliers paid!
+
+    if daily_sales.length
+      .card.dark-card.mt-3
+        .card-header
+          | Daily Sales Summary
+        .card-body.p-0
+          table.table.table-dark.table-hover.mb-0
+            thead
+              tr
+                th Date
+                th Transactions
+                th Total Revenue
+            tbody
+              each d in daily_sales
+                tr
+                  td= d.day
+                  td= d.count
+                  td.text-dark UGX #{parseInt(d.total).toLocaleString()}
+
+  .d-flex.gap-2.mt-4.no-print
+    button.btn.btn-warning.fw-bold(onclick="downloadReport()")
+      | Download Report

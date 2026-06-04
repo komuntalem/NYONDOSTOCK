@@ -1,0 +1,34 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title || 'NyondoStock'
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css")
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
+    link(rel="stylesheet" href="/css/style.css")
+  body(class=user ? 'logged-in' : '')
+    if user
+      include ../partials/navbar
+      .wrapper
+        include ../partials/sidebar
+        main.main-content
+          .container-fluid.py-3
+            if success && success.length
+              .alert.alert-success.alert-dismissible.fade.show
+                i.bi.bi-check-circle.me-2
+                = success[0]
+                button.btn-close(type="button" data-bs-dismiss="alert")
+            if error && error.length
+              .alert.alert-danger.alert-dismissible.fade.show
+                i.bi.bi-exclamation-triangle.me-2
+                = error[0]
+                button.btn-close(type="button" data-bs-dismiss="alert")
+            block content
+    else
+      block content
+
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js")
+    script(src="/js/main.js")
+    block scripts

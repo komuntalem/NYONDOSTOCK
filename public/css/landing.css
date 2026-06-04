@@ -1,0 +1,316 @@
+/* NyondoStock Landing Page — Industrial / Hardware aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap');
+
+:root {
+  --black: #0f172a;
+  --dark: #ffffff;
+  --dark2: #eef6f7;
+  --dark3: #f8fafc;
+  --accent: #0ea5a8;
+  --accent-dim: rgba(14, 165, 168, 0.12);
+  --accent-border: rgba(14, 165, 168, 0.25);
+  --white: #ffffff;
+  --gray: #475569;
+  --gray-light: #64748b;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: #f0ebe5;
+  color: #1a1a1a;
+  font-family: 'IBM Plex Sans', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ═══════════════ SLIDESHOW ═══════════════ */
+.slideshow-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  animation: slideshow 15s infinite;
+}
+
+.slide:nth-child(2) {
+  animation-delay: 5s;
+}
+
+.slide:nth-child(3) {
+  animation-delay: 10s;
+}
+
+@keyframes slideshow {
+  0%, 5% {
+    opacity: 0;
+  }
+  10%, 90% {
+    opacity: 1;
+  }
+  95%, 100% {
+    opacity: 0;
+  }
+}
+
+.slideshow-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 10, 0.65);
+  z-index: 1;
+}
+
+/* ═══════════════ HERO (SIMPLE LANDING) ═══════════════ */
+.hero.simple {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+}
+
+.hero.simple::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 0;
+}
+
+.hero.simple .hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.logo-section {
+  margin-bottom: 3rem;
+}
+
+.welcome-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.5rem;
+  letter-spacing: 4px;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-title .brand-nyo { 
+  color: #ffffff;
+  display: inline-block;
+}
+.welcome-title .brand-ndo { 
+  color: #ffffff;
+  display: inline-block;
+}
+.welcome-title .brand-stock { 
+  color: #ffffff;
+  display: inline-block;
+}
+
+.company-name {
+  color: #ffffff;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.welcome-heading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+  color: var(--white);
+}
+
+.welcome-subtitle {
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.welcome-description {
+  font-size: 1rem;
+  color: #ffffff;
+  margin-bottom: 2.5rem;
+  line-height: 1.8;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.btn-primary-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.95rem 2rem;
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-family: 'IBM Plex Sans', sans-serif;
+  box-shadow: 0 16px 40px rgba(14, 165, 168, 0.18);
+}
+
+.btn-primary-cta:hover {
+  background: #0b7285;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 45px rgba(14, 165, 168, 0.2);
+  color: #fff;
+}
+
+.btn-primary-cta:active {
+  transform: translateY(0);
+}
+
+/* ═══════════════ LOGIN MODAL ═══════════════ */
+.modal.fade {
+  --bs-modal-bg: #ffffff;
+  --bs-modal-border-color: rgba(0,0,0,0.15);
+  z-index: 9999 !important;
+}
+
+.modal-content {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 8px;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+  padding: 1.5rem;
+}
+
+.modal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-body .input-group-text {
+  background: #f9f9f9;
+  border: 1px solid rgba(0,0,0,0.15);
+  color: #666;
+}
+
+.modal-body .form-control {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.15);
+  color: #1a1a1a;
+}
+
+.modal-body .form-control::placeholder {
+  color: #999;
+}
+
+.modal-body .form-control:focus {
+  background: #ffffff;
+  border-color: #000;
+  color: #1a1a1a;
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+}
+
+.modal-body .form-label {
+  color: #1a1a1a;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.modal-body .btn-warning {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.modal-body .btn-warning:hover,
+.modal-body .btn-warning:focus {
+  background: #333;
+  border-color: #333;
+  color: #fff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.1);
+}
+
+.modal-body .alert {
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #ff9999;
+  border-radius: 6px;
+}
+
+.btn-close {
+  filter: brightness(0) invert(1);
+}
+
+/* ═══════════════ RESPONSIVE ═══════════════ */
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+  }
+
+  .welcome-heading {
+    font-size: 1.8rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1rem;
+  }
+
+  .welcome-description {
+    font-size: 0.95rem;
+  }
+
+  .btn-primary-cta {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+}

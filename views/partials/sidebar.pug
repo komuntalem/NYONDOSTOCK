@@ -1,0 +1,36 @@
+aside#sidebar.sidebar
+  nav.sidebar-nav
+    ul.nav.flex-column
+      li.nav-item
+        a.nav-link(href="/dashboard")
+          span.text-dark.font-weight-bold DASHBOARD
+      li.nav-divider.text-dark.font-weight-bold.underline SALES
+      li.nav-item
+        a.nav-link(href="/sales/new")
+          span New Sale
+      li.nav-item
+        a.nav-link(href="/sales")
+          span Sales Records
+      li.nav-divider.text-dark.font-weight-bold.underline INVENTORY
+      li.nav-item
+        a.nav-link(href="/products")
+          span Stock
+      li.nav-item
+        a.nav-link(href="/suppliers")
+          span Suppliers & Credit
+      li.nav-divider.text-dark.font-weight-bold.underline CUSTOMERS
+      li.nav-item
+        a.nav-link(href="/customers")
+          span Customers
+      li.nav-item
+        a.nav-link(href="/deposits")
+          span Deposits
+      li.nav-item
+        a.nav-link(href="/transport")
+          span Transport
+      if user && (user.role === 'admin' || user.role === 'store_manager')
+        li.nav-divider.text-dark.font-weight-bold.underline MANAGEMENT
+        li.nav-item
+          a.nav-link(href="/reports")
+            span Reports
+            

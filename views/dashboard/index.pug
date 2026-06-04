@@ -1,0 +1,53 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2
+      i.bi.bi-speedometer2.me-2
+      | Dashboard
+    p.text-muted Welcome to NyondoStock!
+
+  .row.g-3.mb-4
+    .col-6.col-md-3.col-lg-3
+      .stat-card
+        .stat-value= stats.total_products || 0
+        .stat-label Products
+    .col-6.col-md-3.col-lg-3
+      .stat-card
+        .stat-value= stats.total_sales || 0
+        .stat-label Today's Sales
+    .col-6.col-md-3.col-lg-3
+      .stat-card
+        .stat-value UGX #{parseInt(stats.today_revenue || 0).toLocaleString()}
+        .stat-label Today Revenue
+    .col-6.col-md-3.col-lg-3
+      .stat-card(class=stats.low_stock > 0 ? 'border-danger' : '')
+        .stat-value= stats.low_stock || 0
+        .stat-label Low Stock Items
+
+  .row.g-3
+    .col-md-12
+      .card.dark-card
+        .card-header
+          i.bi.bi-receipt.me-2
+          | Recent Sales
+          a.btn.btn-sm.btn-outline-dark.float-end(href="/sales/new")
+            i.bi.bi-plus
+            | New Sale
+        .card-body.p-0
+          table.table.table-dark.table-hover.mb-0
+            thead
+              tr
+                th Customer
+                th Amount
+                th Date
+            tbody
+              if recent_sales.length
+                each sale in recent_sales
+                  tr(onclick=`window.location.href='/sales/receipt/${sale.id}'` style="cursor: pointer;")
+                    td.text-white= sale.customer_name || 'Walk-in'
+                    td.text-white UGX #{parseInt(sale.grand_total).toLocaleString()}
+                    td.text-white.small= new Date(sale.sale_date).toLocaleString()
+              else
+                tr
+                  td.text-center.text-muted(colspan="3") No sales today yet

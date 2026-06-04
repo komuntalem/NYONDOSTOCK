@@ -1,0 +1,43 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2
+      i.bi.bi-people.me-2
+      | Customers
+    a.btn.btn-dark.fw-bold(href="/customers/add")
+      i.bi.bi-person-plus.me-1
+      | Add Customer
+
+  .card.dark-card.mb-3
+    .card-body
+      form.row.g-2(method="GET")
+        .col-md-5
+          input.form-control(type="text" name="search" value=search placeholder="Search by name or phone...")
+        .col-md-2
+          button.btn.btn-dark(type="submit") Search
+
+  .card.dark-card
+    .card-body.p-0
+      .table-responsive
+        table.table.table-dark.table-hover.mb-0
+          thead
+            tr
+              th Name
+              th Phone
+              th NIN
+              th Actions
+          tbody
+            if customers.length
+              each c in customers
+                tr
+                  td= c.name
+                  td= c.phone
+                  td= c.nin || '-'
+                  td
+                    .d-flex.gap-1
+                      a.btn.btn-sm.btn-outline-dark(href=`/customers/edit/${c.id}`)
+                        i.bi.bi-pencil
+            else
+              tr
+                td.text-center.text-muted(colspan="5") No customers found

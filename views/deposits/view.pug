@@ -1,0 +1,90 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2 #{deposit.customer_name}'s Deposit
+    a.btn.btn-outline-secondary(href="/deposits") Back
+
+  .row.g-3.mb-4
+    .col-md-6
+      .card.dark-card
+        .card-body
+          h5.text-dark Deposit summary
+          .row.g-3
+            .col-6
+              p.text-muted.mb-1 Guide Target
+              h5 UGX #{parseInt(deposit.target_amount).toLocaleString()}
+            .col-6
+              p.text-muted.mb-1 Deposited
+              h5 UGX #{parseInt(deposit.amount_deposited).toLocaleString()}
+            .col-6
+              p.text-muted.mb-1 Remaining
+              h5 UGX #{parseInt(deposit.balance).toLocaleString()}
+            .col-6
+              p.text-muted.mb-1 Status
+              span.badge(class=deposit.status==='completed' ? 'bg-success' : 'bg-warning text-dark')= deposit.status.toUpperCase()
+    .col-md-6
+      .card.dark-card
+        .card-body
+          h5.text-dark Customer & product
+          .d-flex.justify-content-between.mb-2
+            span.text-muted Customer
+            strong= deposit.customer_name
+          .d-flex.justify-content-between.mb-2
+            span.text-muted Phone
+            strong= deposit.phone
+          if deposit.nin
+            .d-flex.justify-content-between.mb-2
+              span.text-muted NIN
+              strong= deposit.nin
+          hr
+          .d-flex.justify-content-between.mb-2
+            span.text-muted Product
+            strong= deposit.product_name
+          .d-flex.justify-content-between.mb-2
+            span.text-muted Quantity
+            strong= `${deposit.quantity} ${deposit.unit}`
+          .d-flex.justify-content-between.mb-2
+            span.text-muted Current unit price
+            strong UGX #{parseInt(deposit.selling_price).toLocaleString()}
+          .d-flex.justify-content-between.mb-2
+            span.text-muted Current total
+            strong UGX #{parseInt(deposit.quantity * deposit.selling_price).toLocaleString()}
+
+  if deposit.status === 'active'
+    .row.g-3.mb-4
+      .col-md-6
+        .card.dark-card
+          .card-body
+            h5.text-dark Record payment
+            form(method="POST" action=`/deposits/${deposit.id}/pay`)
+              .input-group
+                span.input-group-text UGX
+                input.form-control(type="number" name="amount" min="1" placeholder="Amount" required)
+              button.btn.btn-warning.w-100.mt-3.fw-bold(type="submit") Add Payment
+      .col-md-6
+        .card.dark-card
+          .card-body
+            h5.text-dark Collect goods
+            p.text-muted.mb-3 Final price is based on today's selling price.
+            a.btn.btn-success.w-100.mt-2(href=`/deposits/${deposit.id}/collect`) Proceed to Collection
+
+  .card.dark-card
+    .card-header Payment History
+    .card-body.p-0
+      table.table.table-dark.table-hover.mb-0
+        thead
+          tr
+            th Date
+            th Amount (UGX)
+            th Recorded By
+        tbody
+          if payments.length
+            each p in payments
+              tr
+                td= new Date(p.payment_date).toLocaleString()
+                td.text-success UGX #{parseInt(p.amount).toLocaleString()}
+                td= p.recorded_by_name || '-'
+          else
+            tr
+              td.text-center.text-muted(colspan="3") No payments yet

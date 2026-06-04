@@ -1,0 +1,54 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2 Sales Records
+    a.btn.btn-dark.fw-bold(href="/sales/new")
+      | New Sale
+
+  .card.dark-card.mb-3
+    .card-body
+      form.row.g-2(method="GET")
+        .col-md-4
+          input.form-control(type="date" name="date" value=date)
+        .col-md-2
+          button.btn.btn-dark(type="submit") Filter
+        .col-md-2
+          a.btn.btn-outline-secondary(href="/sales") Clear
+
+  .card.dark-card
+    .card-body.p-0
+      .table-responsive
+        table.table.table-dark.table-hover.mb-0
+          thead
+            tr
+              th Sale #
+              th Customer
+              th Items Total
+              th Transport
+              th Discount
+              th Grand Total
+              th Payment
+              th Staff
+              th Date
+              th Receipt
+          tbody
+            if sales.length
+              each s in sales
+                tr
+                  td= s.id
+                  td= s.customer_name || 'Walk-in'
+                  td= parseInt(s.total_amount).toLocaleString()
+                  td= parseInt(s.transport_cost).toLocaleString()
+                  td.text-danger= parseInt(s.discount).toLocaleString()
+                  td.fw-bold UGX #{parseInt(s.grand_total).toLocaleString()}
+                  td
+                    span(class=`badge bg-${s.payment_method==='cash'?'success':s.payment_method==='credit'?'danger':'info'}`)= s.payment_method
+                  td= s.staff_name
+                  td.small.text-muted= new Date(s.sale_date).toLocaleString()
+                  td
+                    a.btn.btn-sm.btn-dark(href=`/sales/receipt/${s.id}`)
+                      | Download
+            else
+              tr
+                td.text-center.text-muted(colspan="10") No sales found

@@ -1,0 +1,36 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2
+      i.bi.bi-truck.me-2
+      = title
+    a.btn.btn-outline-secondary(href="/suppliers")
+      i.bi.bi-arrow-left.me-1
+      | Back
+
+  .row.justify-content-center
+    .col-md-7
+      .card.dark-card
+        .card-body
+          form(method="POST" action=supplier.id ? `/suppliers/edit/${supplier.id}` : '/suppliers/add')
+            .row.g-3
+              .col-12
+                label.form-label Supplier Name *
+                input.form-control(type="text" name="name" value=supplier.name required)
+              .col-md-6
+                label.form-label Phone
+                input.form-control(type="tel" name="phone" value=supplier.phone placeholder="07XXXXXXXX")
+              .col-md-6
+                label.form-label Email
+                input.form-control(type="email" name="email" value=supplier.email)
+              .col-12
+                label.form-label Address
+                textarea.form-control(name="address" rows="2")= supplier.address
+              .col-12
+                label.form-label Credit Limit (UGX)
+                input.form-control(type="number" name="credit_limit" value=supplier.credit_limit||0 min="0")
+              .col-12
+                button.btn.btn-warning.fw-bold(type="submit")
+                  i.bi.bi-save.me-1
+                  = supplier.id ? 'Update Supplier' : 'Add Supplier'

@@ -1,0 +1,39 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2
+      i.bi.bi-person-gear.me-2
+      | User Management
+    a.btn.btn-warning.fw-bold(href="/users/add")
+      i.bi.bi-person-plus.me-1
+      | Add User
+
+  .card.dark-card
+    .card-body.p-0
+      table.table.table-dark.table-hover.mb-0
+        thead
+          tr
+            th Name
+            th Email
+            th Role
+            th Phone
+            th Joined
+            th Actions
+        tbody
+          each u in users
+            tr
+              td= u.name
+              td= u.email
+              td
+                span(class=`badge bg-${u.role==='admin'?'danger':u.role==='store_manager'?'warning text-dark':'secondary'}`)
+                  = u.role.replace('_',' ')
+              td= u.phone || '-'
+              td.small.text-muted= new Date(u.created_at).toLocaleDateString()
+              td
+                if u.id != user.id
+                  form(method="POST" action=`/users/delete/${u.id}` onsubmit="return confirm('Delete this user?')")
+                    button.btn.btn-sm.btn-outline-danger(type="submit")
+                      i.bi.bi-trash
+                else
+                  span.badge.bg-success You

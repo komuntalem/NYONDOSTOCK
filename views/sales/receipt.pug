@@ -1,0 +1,64 @@
+extends ../layouts/main
+
+block content
+  .row.justify-content-center
+    .col-md-6
+      .receipt-card
+        .receipt-header
+          h3
+            span.text-dark NYO
+            | NDO
+            span.text-dark STOCK
+          p.mb-0.fw-bold NYONDO General Hardware LTD
+          p.text-muted.small Nansana, Uganda
+          hr
+          .d-flex.justify-content-between
+            span
+              strong Receipt # 
+              span.text-dark \##{sale.id}
+            span.text-muted.small= new Date(sale.sale_date).toLocaleString()
+          .d-flex.justify-content-between
+            span Customer: 
+              strong= sale.customer_name || 'Walk-in'
+            span Staff: 
+              strong= sale.staff_name
+
+        table.table.table-bordered.table-sm.mt-3.text-dark
+          thead.table-dark
+            tr
+              th Item
+              th Qty
+              th Unit Price
+              th Subtotal
+          tbody
+            each item in items
+              tr
+                td= item.product_name
+                td= item.quantity
+                td= parseInt(item.unit_price).toLocaleString()
+                td.fw-bold= parseInt(item.subtotal).toLocaleString()
+          tfoot.table-dark
+            if sale.discount > 0
+              tr
+                td(colspan="3").text-end Discount
+                td.text-danger -#{parseInt(sale.discount).toLocaleString()}
+            if sale.transport_cost > 0
+              tr
+                td(colspan="3").text-end Transport
+                td= parseInt(sale.transport_cost).toLocaleString()
+            tr
+              td(colspan="3").text-end.fw-bold.text-warning TOTAL
+              td.fw-bold.text-warning UGX #{parseInt(sale.grand_total).toLocaleString()}
+
+        .receipt-footer
+          p.mb-1
+            strong Payment: 
+            span= sale.payment_method
+          p.text-muted.small Thank you for shopping at NYONDO General Hardware LTD!
+          p.text-muted.small Good luck with your construction project!
+
+        .d-flex.gap-2.mt-3.no-print
+          button.btn.btn-warning.fw-bold(onclick="downloadReceipt(#{sale.id})")
+            | Download
+          a.btn.btn-outline-light(href="/sales/new") New Sale
+          a.btn.btn-outline-secondary(href="/sales") All Sales

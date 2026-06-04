@@ -1,0 +1,54 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2 Transport Records
+  
+  .card.dark-card.mb-3
+    .card-header
+      i.bi.bi-info-circle.text-dark.me-2
+      | Transport Policy
+    .card-body
+      .row
+        .col-md-6
+          p.mb-1
+            strong Free transport
+            |  for orders ≥ UGX 500,000 within 10km of Nansana
+        .col-md-6
+          p.mb-1
+            strong Base charge: UGX 30,000
+            |  + UGX 3,000/km beyond 10km
+
+  .card.dark-card
+    .card-body.p-0
+      .table-responsive
+        table.table.table-dark.table-hover.mb-0
+          thead
+            tr
+              th Sale #
+              th Destination
+              th Distance
+              th Charge
+              th Free?
+              th Date
+          tbody
+            if records.length
+              each r in records
+                tr
+                  td
+                    if r.sale_id
+                      a.text-dark(href=`/sales/receipt/${r.sale_id}`) ##{r.sale_id}
+                    else
+                      span.text-muted -
+                  td= r.destination
+                  td= r.distance_km ? `${r.distance_km} km` : '-'
+                  td.text-dark UGX #{parseInt(r.total_charge).toLocaleString()}
+                  td
+                    if r.is_free
+                      span.badge.bg-success FREE
+                    else
+                      span.badge.bg-secondary Charged
+                  td.small.text-muted= new Date(r.transport_date).toLocaleString()
+            else
+              tr
+                td.text-center.text-muted(colspan="6") No transport records

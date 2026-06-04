@@ -1,0 +1,10 @@
+extends layouts/main
+
+block content
+  .d-flex.flex-column.align-items-center.justify-content-center(style="min-height:60vh")
+    h1.display-1.text-dark 404
+    h3.text-white Page Not Found
+    p.text-muted The page you're looking for doesn't exist.
+    a.btn.btn-warning.mt-3(href="/dashboard")
+      i.bi.bi-house.me-1
+      | Back to Dashboard

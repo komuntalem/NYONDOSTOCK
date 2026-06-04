@@ -1,0 +1,111 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2
+      i.bi.bi-boxes.me-2
+      | Stock Inventory
+    if user.role !== 'sales_attendant'
+      a.btn.btn-warning.fw-bold(href="/products/add")
+        i.bi.bi-plus.me-1
+        | Add Product
+
+  .card.dark-card.mb-3
+    .card-body
+      form.row.g-2(method="GET")
+        .col-md-5
+          input.form-control(name="search" value=search placeholder="Search products..." type="text")
+        .col-md-4
+          select.form-select(name="category")
+            option(value="") All Categories
+            each cat in categories
+              option(value=cat.category selected=cat.category===category)= cat.category
+        .col-md-3
+          button.btn.btn-warning.w-100(type="submit")
+            i.bi.bi-search.me-1
+            | Search
+
+  .card.dark-card
+    .card-body.p-0
+      .table-responsive
+        table.table.table-dark.table-hover.mb-0
+          thead
+            tr
+              th # 
+              th Product Name
+              th Category
+              th Unit
+              th Cost (UGX)
+              th Price (UGX)
+              th Stock
+              th Status
+              th Actions
+          tbody
+            if products.length
+              each p in products
+                tr(class=p.quantity <= p.min_stock_level ? 'table-danger-soft' : '')
+                  td= p.id
+                  td
+                    strong= p.name
+                    if p.description
+                      br
+                      small.text-muted= p.description
+                  td
+                    span.badge.badge-cat= p.category
+                  td= p.unit
+                  td= parseInt(p.cost_price).toLocaleString()
+                  td.fw-bold= parseInt(p.selling_price).toLocaleString()
+                  td
+                    span(class=p.quantity <= p.min_stock_level ? 'text-danger fw-bold' : 'text-success')= p.quantity
+                  td
+                    if p.quantity <= 0
+                      span.badge.bg-danger OUT
+                    else if p.quantity <= p.min_stock_level
+                      span.badge.bg-warning.text-dark LOW
+                    else
+                      span.badge.bg-success OK
+                  td
+                    if user.role !== 'sales_attendant'
+                      .d-flex.gap-1
+                        a.btn.btn-sm.btn-outline-warning(href=`/products/edit/${p.id}`)
+                          i.bi.bi-pencil
+                        button.btn.btn-sm.btn-outline-success(onclick=`restockModal(${p.id},'${p.name}')`)
+                          i.bi.bi-plus-circle
+                        form(method="POST" action=`/products/delete/${p.id}` style="display:inline" onsubmit="return confirm('Delete this product?')")
+                          button.btn.btn-sm.btn-outline-danger(type="submit")
+                            i.bi.bi-trash
+                    else
+                      span.text-muted.small View only
+            else
+              tr
+                td.text-center.text-muted(colspan="9") No products found
+
+  // Restock Modal
+  .modal.fade#restockModal(tabindex="-1")
+    .modal-dialog
+      .modal-content.bg-dark.text-white
+        .modal-header.border-warning
+          h5.modal-title
+            i.bi.bi-plus-circle.text-warning.me-2
+            | Restock Product
+          button.btn-close.btn-close-white(data-bs-dismiss="modal")
+        form(method="POST" id="restockForm")
+          .modal-body
+            p.text-muted Adding stock for: 
+              strong#restockProductName
+            .mb-3
+              label.form-label Quantity to Add
+              input.form-control(type="number" name="quantity" min="1" required placeholder="e.g. 50")
+          .modal-footer.border-0
+            button.btn.btn-secondary(data-bs-dismiss="modal") Cancel
+            button.btn.btn-warning.fw-bold(type="submit")
+              i.bi.bi-plus-circle.me-1
+              | Add Stock
+
+block scripts
+  script.
+    function restockModal(id, name) {
+      document.getElementById('restockProductName').textContent = name;
+      document.getElementById('restockForm').action = '/products/restock/' + id;
+      new bootstrap.Modal(document.getElementById('restockModal')).show();
+    }

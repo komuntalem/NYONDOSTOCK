@@ -1,0 +1,95 @@
+extends ../layouts/main
+
+block content
+  .page-header
+    h2
+      i.bi.bi-credit-card.me-2
+      | #{supplier.name} - Credit Records
+    a.btn.btn-outline-secondary(href="/suppliers")
+      i.bi.bi-arrow-left.me-1
+      | Back
+
+  .row.g-3.mb-4
+    .col-md-4
+      .stat-card
+        .stat-icon.text-warning
+          i.bi.bi-bank
+        .stat-value UGX #{parseInt(supplier.credit_limit).toLocaleString()}
+        .stat-label Credit Limit
+    .col-md-4
+      .stat-card
+        .stat-icon.text-danger
+          i.bi.bi-exclamation-circle
+        .stat-value UGX #{parseInt(supplier.current_balance).toLocaleString()}
+        .stat-label Current Debt
+
+  if user.role !== 'sales_attendant'
+    .card.dark-card.mb-4
+      .card-header
+        i.bi.bi-plus-circle.me-2
+        | Record New Stock / Credit Entry
+      .card-body
+        form(method="POST" action=`/suppliers/${supplier.id}/credit/add`)
+          .row.g-3
+            .col-md-3
+              label.form-label Product
+              select.form-select(name="product_id" required)
+                each p in products
+                  option(value=p.id)= p.name
+            .col-md-2
+              label.form-label Qty
+              input.form-control(type="number" name="quantity" min="1" required)
+            .col-md-2
+              label.form-label Unit Cost (UGX)
+              input.form-control(type="number" name="unit_cost" min="0" step="0.01" required)
+            .col-md-2
+              label.form-label Selling Price (UGX)
+              input.form-control(type="number" name="selling_price" min="0" step="0.01" required)
+            .col-md-2
+              label.form-label Payment (cash/credit)
+              input.form-control(type="text" name="payment_method" placeholder="cash or credit" required)
+            .col-md-2
+              label.form-label Delivery Date
+              input.form-control(type="date" name="delivery_date")
+            .col-12
+              button.btn.btn-warning.fw-bold(type="submit")
+                i.bi.bi-save.me-1
+                | Record Stock Arrival
+
+  .card.dark-card
+    .card-header Credit History
+    .card-body.p-0
+      .table-responsive
+        table.table.table-dark.table-hover.mb-0
+          thead
+            tr
+              th Date
+              th Product
+              th Qty
+              th Total
+              th Paid
+              th Balance
+              th Status
+              th Pay
+          tbody
+            if credits.length
+              each c in credits
+                tr
+                  td.small= new Date(c.created_at).toLocaleDateString()
+                  td= c.product_name
+                  td= c.quantity
+                  td= parseInt(c.total_amount).toLocaleString()
+                  td.text-success= parseInt(c.amount_paid).toLocaleString()
+                  td(class=c.balance > 0 ? 'text-danger' : 'text-success')= parseInt(c.balance).toLocaleString()
+                  td
+                    span(class=`badge bg-${c.status==='paid'?'success':c.status==='partial'?'warning text-dark':'danger'}`)= c.status
+                  td
+                    if c.status !== 'paid' && user.role !== 'sales_attendant'
+                      form(method="POST" action=`/suppliers/credit/pay/${c.id}`)
+                        input(type="hidden" name="supplier_id" value=supplier.id)
+                        .d-flex.gap-1
+                          input.form-control.form-control-sm(type="number" name="amount" placeholder="Amount" style="width:90px" min="1")
+                          button.btn.btn-sm.btn-success(type="submit") Pay
+            else
+              tr
+                td.text-center.text-muted(colspan="8") No credit records
