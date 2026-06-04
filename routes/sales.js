@@ -16,7 +16,7 @@ router.get('/', isLoggedIn, async (req, res) => {
   res.render('sales/index', { title: 'Sales Records', sales, date });
 });
 
-// New sale form (POS)
+
 router.get('/new', isLoggedIn, async (req, res) => {
   const [products] = await db.query('SELECT * FROM products WHERE quantity > 0 ORDER BY name');
   const [customers] = await db.query('SELECT * FROM customers ORDER BY name');
@@ -44,7 +44,6 @@ router.post('/create', isLoggedIn, async (req, res) => {
 
     let finalCustomerId = customer_id || null;
 
-    // Auto-create customer if phone provided and not existing
     if (customer_phone && customer_phone.trim()) {
       try {
         const [existing] = await conn.query('SELECT id FROM customers WHERE phone = ?', [customer_phone]);
@@ -99,7 +98,6 @@ router.post('/create', isLoggedIn, async (req, res) => {
   }
 });
 
-// View receipt
 router.get('/receipt/:id', isLoggedIn, async (req, res) => {
   const [[sale]] = await db.query(`
     SELECT s.*, u.name as staff_name FROM sales s JOIN users u ON s.user_id=u.id WHERE s.id=?`, [req.params.id]);

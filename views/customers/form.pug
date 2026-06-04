@@ -15,17 +15,16 @@ block content
             .row.g-3
               .col-md-8
                 label.form-label Name *
-                input.form-control(type="text" name="name" value=customer.name required)
+                input.form-control(type="text" name="name" value=customer.name)
               .col-md-4
                 label.form-label Phone * (Uganda)
-                input.form-control(type="tel" name="phone" value=customer.phone required placeholder="07XXXXXXXX")
-                small.text-muted Must be valid Ugandan number
+                input.form-control(type="text" name="phone" value=customer.phone placeholder="07XXXXXXXX")
               .col-md-6
                 label.form-label NIN (National ID)
                 input.form-control(type="text" name="nin" value=customer.nin placeholder="CM1234567...")
               .col-md-6
                 label.form-label Email
-                input.form-control(type="email" name="email" value=customer.email)
+                input.form-control(type="text" name="email" value=customer.email)
               .col-12
                 label.form-label Address
                 textarea.form-control(name="address" rows="2")= customer.address
